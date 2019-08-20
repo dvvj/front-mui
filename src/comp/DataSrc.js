@@ -21,12 +21,12 @@ let DataSrc = {
   ProfOrg: {
     getAllProducts: {
       columns: [
-        { title: 'name', field: 'name' },
-        { title: 'shortName', field: 'shortName' },
-        { title: 'price0', field: 'price0' }
+        { title: 'name', field: 'product.name' },
+        { title: 'shortName', field: 'product.shortName' },
+        { title: 'price0', field: 'product.price0' }
       ],
       get: query => {
-        return doGet(query, '/api/products');
+        return doGet(query, '/api/productsWithAssets');
       }
     }
   }

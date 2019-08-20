@@ -19,8 +19,11 @@ import Refresh from '@material-ui/icons/Refresh';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import MaterialTable from 'material-table';
 import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
 
 import DataSrc from '../DataSrc';
+import ProdImages from './ProdImages';
+import { fontSize } from '@material-ui/system';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -115,7 +118,12 @@ class ProdMgmt extends Component {
           data={this.state.data.products}
           detailPanel={rowData => {
             return (
-              <div>{rowData.id}</div>
+              // https://github.com/mui-org/material-ui/issues/647
+              // <Button variant="outlined">
+              //   <input accept="image/*" type="file" />
+              // </Button>
+              <ProdImages imgUrl={`/product/${rowData.product.id}/${rowData.assetItems[0].url}`} prodName={rowData.product.name} />
+
             )
           }}
           editable={{
@@ -123,14 +131,14 @@ class ProdMgmt extends Component {
             onRowUpdate: this.onRowUpdate,
             onRowDelete: this.onRowDelete
           }}
-          actions={[
-            {
-              icon: Refresh,
-              tooltip: 'Refresh Data',
-              isFreeAction: true,
-              onClick: this.onRefresh
-            }
-          ]}
+          // actions={[
+          //   {
+          //     icon: Refresh,
+          //     tooltip: 'Refresh Data',
+          //     isFreeAction: true,
+          //     onClick: this.onRefresh
+          //   }
+          // ]}
         />
       </Container>
   );

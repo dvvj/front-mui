@@ -39,7 +39,8 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
-export default function MaterialTableDemo() {
+export default function MaterialTableDemo(props) {
+    const { columns } = props;
   const [state, setState] = React.useState({
     columns: [
       { title: 'Name', field: 'name' },
