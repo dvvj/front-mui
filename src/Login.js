@@ -43,6 +43,10 @@ class Login extends Component {
             pass: this.state.pass
         };
         Actions.doLogin(userpass);
+
+        sessionStorage.setItem('uid', this.state.user);
+        let uid = sessionStorage.getItem('uid');
+        console.log('getItem from session', uid);
         
         console.log('in handleLogin');
         //this.props.history.push('/orgs');

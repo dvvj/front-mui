@@ -17,6 +17,23 @@ let doGet = (query, url) => {
   })
 };
 
+let doPost = (data, url, cb) => {
+  console.log('data:', data);
+  return new Promise((resolve, reject) => {
+    fetch(url, {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log('result:', result);
+        let res = cb(result);
+        resolve(res)
+      });
+  })
+};
+
 let DataSrc = {
   ProfOrg: {
     getAllProducts: {
@@ -28,6 +45,9 @@ let DataSrc = {
       get: query => {
         return doGet(query, '/api/productsWithAssets');
       }
+    },
+    newProduct: (data, cb) => {
+      return doPost(data, '/api/newProduct', cb);
     }
   }
 };

@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   },
   dropzone: {
     width  : "100%",
-    height : "60px",
+    height : "80px",
     border : "1px solid black",
     fontSize: 18,
     textAlign : "center"
@@ -29,6 +29,9 @@ const useStyles = makeStyles({
 export default function ProdImages(props) {
   const { imgUrl, prodName } = props;
   const classes = useStyles();
+  const dragActiveMsg = '松开鼠标完成【' + prodName + '】图片文件选取';
+  const dragInactiveMsg = '上传【' + prodName +'】图片：点击选取或者直接拖拽文件至此';
+  const dragRejectMsg = '请选取单个图片文件（png/jpg/jpeg后缀）';
 
 
   const onDropFiles = files => {
@@ -37,40 +40,40 @@ export default function ProdImages(props) {
 
   return (
     <Card className={classes.card}>
-      <CardActionArea>
+
         <CardMedia
           className={classes.media}
           image={imgUrl}
-          title="Contemplative Reptile"
+          title={prodName}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            {prodName}
+            <Dropzone onDrop={onDropFiles}
+              accept="image/jpeg,image/png"
+              minSize={0}
+              maxSize={5242880}
+              multiple={false}
+            >
+              {({getRootProps, getInputProps, isDragActive, isDragReject}) => (
+
+                  <div {...getRootProps()}
+                  className={classes.dropzone}>
+                    <input {...getInputProps()} />
+                    {isDragActive ? dragActiveMsg : dragInactiveMsg}
+                    {isDragReject && dragRejectMsg}
+                  </div>
+
+              )}
+            </Dropzone>
           </Typography>
+
           {/* <Typography variant="body2" color="textSecondary" component="p">
             Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
             across all continents except Antarctica
           </Typography> */}
         </CardContent>
-      </CardActionArea>
+
       <CardActions>
-      <Dropzone onDrop={onDropFiles}
-        accept="image/jpeg,image/png"
-        minSize={0}
-        maxSize={5242880}
-        multiple={false}
-      >
-        {({getRootProps, getInputProps, isDragActive, isDragReject}) => (
-
-            <div {...getRootProps()}
-            className={classes.dropzone}>
-              <input {...getInputProps()} />
-              {isDragActive ? "松开鼠标完成图片文件选取" : '上传产品图片：点击选取图片文件或者直接将图片文件拖拽至此'}
-              {isDragReject && '请选取单个图片文件（png/jpg/jpeg后缀）'}
-            </div>
-
-        )}
-      </Dropzone>
         {/* <Button size="small" color="primary">更新</Button> */}
         {/* <Button size="small" color="primary">
           Learn More

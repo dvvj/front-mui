@@ -53,35 +53,59 @@ class ProdMgmt extends Component {
   };
 
   state = {
-    data: []
+    page: -1,
+    products: [],
+    totalCount: -1
   }
 
   async componentDidMount() {
-    const data = await DataSrc.ProfOrg.getAllProducts.get({});
-    console.log('data:', data);
-    this.setState({data});
+    const { page, products, totalCount } = await DataSrc.ProfOrg.getAllProducts.get({});
+    console.log('products:', products);
+    this.setState({ page, products, totalCount });
   }
 
-  onRowAdd = newData =>
+  onRowAdd = newProdData =>
     new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-        const data = {...this.state.data};
-        data.products.push(newData);
-        this.setState({ ...this.state, data });
-      }, 600);
+      let uid = sessionStorage.getItem('uid');
+      console.log('getItem from session', uid);
+      let prod = {
+        id: -1,
+        ...newProdData.product,
+        detailedInfo: '',
+        keywords: '',
+        categories: '',
+        producerId: uid
+      };
+      DataSrc.ProfOrg.newProduct(
+        prod, newProd => {
+          resolve();
+          console.log('newProd: ', newProd);
+          const products = this.state.products;
+          products.push({
+            product: newProd,
+            assetItems: []
+          })
+          this.setState({products});
+        }
+      )
+      // fetch(() => {
+      //   resolve();
+      //   const data = {...this.state.data};
+      //   data.products.push(newData);
+      //   this.setState({ ...this.state, data });
+      // }, 600);
     })
 
   onRowUpdate = (newData, oldData) =>
     new Promise(resolve => {
       setTimeout(() => {
         resolve();
-        const data = {...this.state.data};
-        const oldDataIdx = data.products.indexOf(oldData);
-        console.log(`oldData(idx:${oldDataIdx}), newData: `, oldData, newData);
-        data.products[oldDataIdx] = newData;
-        this.setState({ ...this.state, data });
-        console.log('after update: ', this.state.data);
+        // const data = {...this.state.data};
+        // const oldDataIdx = data.products.indexOf(oldData);
+        // console.log(`oldData(idx:${oldDataIdx}), newData: `, oldData, newData);
+        // data.products[oldDataIdx] = newData;
+        // this.setState({ ...this.state, data });
+        // console.log('after update: ', this.state.data);
       }, 600);
     })
 
@@ -89,10 +113,10 @@ class ProdMgmt extends Component {
     new Promise(resolve => {
       setTimeout(() => {
         resolve();
-        const data = {...this.state.data};
-        const oldDataIdx = data.products.indexOf(oldData);
-        data.products.splice(data.products[oldDataIdx], 1);
-        this.setState({ ...this.state, data });
+        // const data = {...this.state.data};
+        // const oldDataIdx = data.products.indexOf(oldData);
+        // data.products.splice(data.products[oldDataIdx], 1);
+        // this.setState({ ...this.state, data });
       }, 600);
     })
 
@@ -100,8 +124,8 @@ class ProdMgmt extends Component {
     new Promise(resolve => {
       setTimeout(() => {
         resolve();
-        const data = {...this.state.data};
-        this.setState({ ...this.state, data });
+        // const data = {...this.state.data};
+        // this.setState({ ...this.state, data });
       }, 600);
     })
 
@@ -115,14 +139,16 @@ class ProdMgmt extends Component {
           tableRef={this.tableRef}
           title="产品列表"
           columns={DataSrc.ProfOrg.getAllProducts.columns}
-          data={this.state.data.products}
-          detailPanel={rowData => {
+          data={this.state.products}
+          detailPanel={prodData => {
             return (
               // https://github.com/mui-org/material-ui/issues/647
               // <Button variant="outlined">
               //   <input accept="image/*" type="file" />
               // </Button>
-              <ProdImages imgUrl={`/product/${rowData.product.id}/${rowData.assetItems[0].url}`} prodName={rowData.product.name} />
+              <ProdImages
+                imgUrl={prodData.assetItems.length == 0 ? '#' : `/product/${prodData.product.id}/${prodData.assetItems[0].url}`}
+                prodName={prodData.product.name} />
 
             )
           }}
