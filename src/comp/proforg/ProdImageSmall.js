@@ -38,6 +38,34 @@ export default function ProdImageSmall(props) {
 
   const onDropFiles = files => {
     console.log('files: ', files);
+    if (files.length != 1) {
+      console.log('error: file count != 1');
+    }
+    else {
+      const formData = new FormData();
+      const file = files[0];
+      formData.append('file', file);
+      formData.append('productId', '11');
+
+      fetch('/api/newProductAsset', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw res
+        }
+        return res.json()
+      })
+      .then(resp => {
+        console.log('resp: ', resp);
+      })
+      .catch(err => {
+        err.json().then(e => {
+          console.log('error: ', e);
+        })
+      })
+    }
   }
 
   return (
