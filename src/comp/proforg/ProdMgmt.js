@@ -23,6 +23,7 @@ import Button from '@material-ui/core/Button';
 
 import DataSrc from '../DataSrc';
 import ProdImages from './ProdImages';
+import ProdImageSmall from './ProdImageSmall';
 import { fontSize } from '@material-ui/system';
 
 const tableIcons = {
@@ -69,7 +70,7 @@ class ProdMgmt extends Component {
       let uid = sessionStorage.getItem('uid');
       console.log('getItem from session', uid);
       let prod = {
-        id: -1,
+        id: null,
         ...newProdData.product,
         detailedInfo: '',
         keywords: '',
@@ -138,20 +139,28 @@ class ProdMgmt extends Component {
           icons={tableIcons}
           tableRef={this.tableRef}
           title="产品列表"
-          columns={DataSrc.ProfOrg.getAllProducts.columns}
+          columns={[
+            { title: '产品名', field: 'product.name' },
+            { title: '简称', field: 'product.shortName' },
+            { title: '基准价格', field: 'product.price0' },
+            {
+              title: '预览图',
+              field: 'imgUrl',
+              render: prodData => 
+                <ProdImageSmall
+                  imgUrl={prodData.assetItems.length == 0 ? '' : `/product/${prodData.product.id}/${prodData.assetItems[0].url}`}
+                  prodName={prodData.product.name} />
+            }
+          ]}
           data={this.state.products}
-          detailPanel={prodData => {
-            return (
-              // https://github.com/mui-org/material-ui/issues/647
-              // <Button variant="outlined">
-              //   <input accept="image/*" type="file" />
-              // </Button>
-              <ProdImages
-                imgUrl={prodData.assetItems.length == 0 ? '#' : `/product/${prodData.product.id}/${prodData.assetItems[0].url}`}
-                prodName={prodData.product.name} />
+          // detailPanel={prodData => {
+          //   return (
+          //     <ProdImages
+          //       imgUrl={prodData.assetItems.length == 0 ? '#' : `/product/${prodData.product.id}/${prodData.assetItems[0].url}`}
+          //       prodName={prodData.product.name} />
 
-            )
-          }}
+          //   )
+          // }}
           editable={{
             onRowAdd: this.onRowAdd,
             onRowUpdate: this.onRowUpdate,

@@ -12,10 +12,10 @@ import Dropzone from 'react-dropzone';
 const useStyles = makeStyles({
   card: {
     margin : "10px 10px",
-    maxWidth: 300,
+    maxWidth: 100,
   },
   media: {
-    height: 300,
+    height: 100,
   },
   dropzone: {
     width  : "100%",
