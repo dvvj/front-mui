@@ -22,8 +22,6 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 
 import DataSrc from '../DataSrc';
-import ProdImages from './ProdImages';
-import ProdImageSmall from './ProdImageSmall';
 import { fontSize } from '@material-ui/system';
 
 const tableIcons = {
@@ -47,7 +45,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
-class ProdMgmt extends Component {
+class ProfOrgMgmt extends Component {
   constructor(props) {
     super(props);
     this.tableRef = React.createRef();
@@ -55,66 +53,46 @@ class ProdMgmt extends Component {
 
   state = {
     page: -1,
-    products: [],
+    proforgs: [],
     totalCount: -1
   }
 
-  getProfOrgId = () => {
-    //return sessionStorage.getItem('uid');
-    return 'o-knc'; //todo
-  }
-
   async componentDidMount() {
-    let t = await DataSrc.ProfOrg.getAllProducts({
-      proforgId: this.getProfOrgId()
-    });
-    console.log('products t:', t);
-    const { page, products, totalCount } = t;
-    this.setState({ page, products, totalCount });
+    const { page, proforgs, totalCount } = await DataSrc.SysAdmin.getAllProfOrgs();
+    console.log('proforgs:', proforgs);
+    this.setState({ page, proforgs, totalCount });
   }
 
-  onRowAdd = newProdData =>
+  onRowAdd = newOrgData =>
     new Promise(resolve => {
-      let uid = this.getProfOrgId(); //
-      console.log('getItem from session', uid);
-      let prod = {
-        id: null,
-        ...newProdData.product,
-        detailedInfo: '',
-        keywords: '',
-        categories: '',
-        producerId: uid
-      };
-      DataSrc.ProfOrg.newProduct(
-        prod, newProd => {
-          resolve();
-          console.log('newProd: ', newProd);
-          const products = this.state.products;
-          products.push({
-            product: newProd,
-            assetItems: []
-          })
-          this.setState({products});
-        }
-      )
-      // fetch(() => {
-      //   resolve();
-      //   const data = {...this.state.data};
-      //   data.products.push(newData);
-      //   this.setState({ ...this.state, data });
-      // }, 600);
+      let uid = sessionStorage.getItem('uid');
+      console.log('uid from session', uid);
+      // let prod = {
+      //   id: null,
+      //   ...newProdData.product,
+      //   detailedInfo: '',
+      //   keywords: '',
+      //   categories: '',
+      //   producerId: uid
+      // };
+      // DataSrc.ProfOrg.newProduct(
+      //   prod, newProd => {
+      //     resolve();
+      //     console.log('newProd: ', newProd);
+      //     const products = this.state.products;
+      //     products.push({
+      //       product: newProd,
+      //       assetItems: []
+      //     })
+      //     this.setState({products});
+      //   }
+      // )
     })
 
   onRowUpdate = (newData, oldData) =>
     new Promise(resolve => {
       setTimeout(() => {
         resolve();
-        // const data = {...this.state.data};
-        // const oldDataIdx = data.products.indexOf(oldData);
-        // console.log(`oldData(idx:${oldDataIdx}), newData: `, oldData, newData);
-        // data.products[oldDataIdx] = newData;
-        // this.setState({ ...this.state, data });
-        // console.log('after update: ', this.state.data);
       }, 600);
     })
 
@@ -122,10 +100,7 @@ class ProdMgmt extends Component {
     new Promise(resolve => {
       setTimeout(() => {
         resolve();
-        // const data = {...this.state.data};
-        // const oldDataIdx = data.products.indexOf(oldData);
-        // data.products.splice(data.products[oldDataIdx], 1);
-        // this.setState({ ...this.state, data });
+
       }, 600);
     })
 
@@ -133,8 +108,6 @@ class ProdMgmt extends Component {
     new Promise(resolve => {
       setTimeout(() => {
         resolve();
-        // const data = {...this.state.data};
-        // this.setState({ ...this.state, data });
       }, 600);
     })
 
@@ -146,23 +119,14 @@ class ProdMgmt extends Component {
         <MaterialTable
           icons={tableIcons}
           tableRef={this.tableRef}
-          title="产品列表"
+          title="医药公司列表"
           columns={[
-            { title: '产品名', field: 'product.name' },
-            { title: '简称', field: 'product.shortName' },
-            { title: '基准价格', field: 'product.price0' },
-            {
-              title: '预览图',
-              field: 'imgUrl',
-              render: prodData => 
-                <ProdImageSmall
-                  productId={prodData.product.id}
-                  imageUrlBase='/product'
-                  imgUrl0={prodData.assetItems.length == 0 ? '' : `/${prodData.product.id}/${prodData.assetItems[0].url}`}
-                  prodName={prodData.product.name} />
-            }
+            { title: '公司ID', field: 'uid' },
+            { title: '公司名', field: 'name' },
+            { title: '基本信息', field: 'info' },
+            { title: '联系电话', field: 'phone' }
           ]}
-          data={this.state.products}
+          data={this.state.proforgs}
           // detailPanel={prodData => {
           //   return (
           //     <ProdImages
@@ -176,18 +140,11 @@ class ProdMgmt extends Component {
             onRowUpdate: this.onRowUpdate,
             onRowDelete: this.onRowDelete
           }}
-          // actions={[
-          //   {
-          //     icon: Refresh,
-          //     tooltip: 'Refresh Data',
-          //     isFreeAction: true,
-          //     onClick: this.onRefresh
-          //   }
-          // ]}
+
         />
       </Container>
   );
   }
 };
 
-export default ProdMgmt;
+export default ProfOrgMgmt;
