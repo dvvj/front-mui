@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { forwardRef } from 'react';
 
+import Lock from '@material-ui/icons/Lock';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Check from '@material-ui/icons/Check';
@@ -21,10 +22,13 @@ import MaterialTable from 'material-table';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 
+import ProfOrgSetPass from './ProfOrgSetPass';
+
 import DataSrc from '../DataSrc';
 import { fontSize } from '@material-ui/system';
 
 const tableIcons = {
+    Lock: forwardRef((props, ref) => <Lock {...props} ref={ref} />),
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
@@ -118,12 +122,9 @@ class ProfOrgMgmt extends Component {
             { title: '联系电话', field: 'phone' }
           ]}
           data={this.state.proforgs}
-          // detailPanel={prodData => {
+          // detailPanel={(prodData) => {
           //   return (
-          //     <ProdImages
-          //       imgUrl={prodData.assetItems.length == 0 ? '#' : `/product/${prodData.product.id}/${prodData.assetItems[0].url}`}
-          //       prodName={prodData.product.name} />
-
+          //     <ProfOrgSetPass />
           //   )
           // }}
           editable={{
@@ -131,7 +132,15 @@ class ProfOrgMgmt extends Component {
             onRowUpdate: this.onRowUpdate,
             onRowDelete: this.onRowDelete
           }}
-
+          actions={[
+            {
+              icon: Lock,
+              tooltip: '设置密码',
+              onClick: (event, proforg) => {
+                console.log(proforg);
+              }
+            }
+          ]}
         />
       </Container>
   );
