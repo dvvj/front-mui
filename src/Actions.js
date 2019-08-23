@@ -10,6 +10,12 @@ const Actions = {
         toProdManagement: () => {
             console.log('in toProdManagement');
         }
+    },
+
+    SysAdmin: {
+        toProfOrgMgmt: () => {
+            console.log('in toProfOrgMgmt');
+        }
     }
 };
 

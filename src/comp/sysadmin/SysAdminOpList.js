@@ -22,9 +22,9 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Actions from '../Actions';
+import Actions from '../../Actions';
 
-import history from '../history';
+import history from '../../history';
 
 const drawerWidth = 240;
 
@@ -84,49 +84,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ProfOrgOpList() {
+export default function SysAdminOpList() {
     const classes = useStyles();
     const theme = useTheme();
 
-    const handleToProdManagement = e => {
+    const handleToProfOrgMgmt = e => {
       e.preventDefault();
-      Actions.ProfOrg.toProdManagement();
-      history.push('/prod-mgmt');
+      Actions.SysAdmin.toProfOrgMgmt();
+      history.push('/proforg-mgmt');
     }
 
     return (
     <List>
         <ListItem button>
-            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-            <ListItemText primary='产品管理' onClick={handleToProdManagement} />
+            <ListItemText primary='医药公司管理' onClick={handleToProfOrgMgmt} />
         </ListItem>
-        <ExpansionPanel>
-          <ExpansionPanelSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography className={classes.heading}>数据统计</Typography>
-          </ExpansionPanelSummary>
-
-          <List>
-            <ListItem button>
-                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-                <ListItemText primary='数据统计 1' onClick={() => alert('data stats 1')} />
-            </ListItem>
-            <ListItem button>
-                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-                <ListItemText primary='数据统计 2' onClick={() => alert('data stats 2')} />
-            </ListItem>
-          </List>
-
-        </ExpansionPanel>
-        {['产品管理', '数据统计', '价格体系设置'].map((text, index) => (
-          <ListItem button key={text}>
-            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
     </List>
     );
 }

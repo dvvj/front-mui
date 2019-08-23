@@ -18,8 +18,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
-import ProfOrgOpList from '../proforg/ProfOrgOpList';
-import SysAdminOpList from '../sysadmin/SysAdminOpList';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Actions from '../../Actions';
+
+import history from '../../history';
 
 const drawerWidth = 240;
 
@@ -79,83 +84,49 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function DrawerMenu(props) {
-  const { role, title, welcomeMsg } = props;
+export default function ProfOrgOpList() {
+    const classes = useStyles();
+    const theme = useTheme();
 
-  const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+    const handleToProdManagement = e => {
+      e.preventDefault();
+      Actions.ProfOrg.toProdManagement();
+      history.push('/prod-mgmt');
+    }
 
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
-
-  function handleDrawerClose() {
-    setOpen(false);
-  }
-
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+    return (
+    <List>
+        <ListItem button>
+            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+            <ListItemText primary='产品管理' onClick={handleToProdManagement} />
+        </ListItem>
+        <ExpansionPanel>
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            {title}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        {(role === 'proforg') ?
-          <ProfOrgOpList /> : (role === 'sysadmin') ? <SysAdminOpList /> : <div />
-        }
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+            <Typography className={classes.heading}>数据统计</Typography>
+          </ExpansionPanelSummary>
+
+          <List>
+            <ListItem button>
+                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+                <ListItemText primary='数据统计 1' onClick={() => alert('data stats 1')} />
             </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}
-      >
-        <div className={classes.drawerHeader} />
-        <Typography paragraph>
-          {welcomeMsg}
-        </Typography>
-      </main>
-    </div>
-  );
+            <ListItem button>
+                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+                <ListItemText primary='数据统计 2' onClick={() => alert('data stats 2')} />
+            </ListItem>
+          </List>
+
+        </ExpansionPanel>
+        {['产品管理', '数据统计', '价格体系设置'].map((text, index) => (
+          <ListItem button key={text}>
+            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+    </List>
+    );
 }

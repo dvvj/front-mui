@@ -19,7 +19,7 @@ function App() {
     <div className="App">
       {/* <CssBaseline /> */}
       <h2>Hello world!</h2>
-      <DrawerMenu title='Hello' welcomeMsg='welcome' />
+      <DrawerMenu title='Hello' welcomeMsg='welcome' role='proforg' />
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
