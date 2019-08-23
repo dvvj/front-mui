@@ -78,6 +78,9 @@ let DataSrc = {
         '/api/proforgs',
         proforgs => withPageAndCount('proforgs', proforgs)
       );
+    },
+    newProfOrg: (data, cb) => {
+      return doPost(data, '/api/newProfOrg', cb);
     }
   }
 };

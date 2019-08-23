@@ -65,28 +65,19 @@ class ProfOrgMgmt extends Component {
 
   onRowAdd = newOrgData =>
     new Promise(resolve => {
-      let uid = sessionStorage.getItem('uid');
-      console.log('uid from session', uid);
-      // let prod = {
-      //   id: null,
-      //   ...newProdData.product,
-      //   detailedInfo: '',
-      //   keywords: '',
-      //   categories: '',
-      //   producerId: uid
-      // };
-      // DataSrc.ProfOrg.newProduct(
-      //   prod, newProd => {
-      //     resolve();
-      //     console.log('newProd: ', newProd);
-      //     const products = this.state.products;
-      //     products.push({
-      //       product: newProd,
-      //       assetItems: []
-      //     })
-      //     this.setState({products});
-      //   }
-      // )
+      // let uid = sessionStorage.getItem('uid');
+      // console.log('uid from session', uid);
+      let proforg = newOrgData;
+
+      DataSrc.SysAdmin.newProfOrg(
+        proforg, newOrgResp => {
+          resolve();
+          console.log('new ProfOrg id: ', newOrgResp);
+          const proforgs = this.state.proforgs;
+          proforgs.push(newOrgData);
+          this.setState({proforgs});
+        }
+      )
     })
 
   onRowUpdate = (newData, oldData) =>
