@@ -148,7 +148,9 @@ class ProdMgmt extends Component {
               field: 'imgUrl',
               render: prodData => 
                 <ProdImageSmall
-                  imgUrl={prodData.assetItems.length == 0 ? '' : `/product/${prodData.product.id}/${prodData.assetItems[0].url}`}
+                  productId={prodData.product.id}
+                  imageUrlBase='/product'
+                  imgUrl0={prodData.assetItems.length == 0 ? '' : `/${prodData.product.id}/${prodData.assetItems[0].url}`}
                   prodName={prodData.product.name} />
             }
           ]}

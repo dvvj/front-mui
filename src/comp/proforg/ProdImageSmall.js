@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 });
 
 export default function ProdImageSmall(props) {
-  const { imgUrl, prodName } = props;
+  const { imageUrlBase, imgUrl0, prodName, productId } = props;
   const classes = useStyles();
   const dragActiveMsg = '松开鼠标完成【' + prodName + '】图片文件选取';
   const dragInactiveMsg = '上传【' + prodName +'】图片：点击选取或者直接拖拽文件至此';
@@ -35,6 +35,9 @@ export default function ProdImageSmall(props) {
   const imgAltText = '【' + prodName +'】预览图';
   const imgTooltipText = '上传【' + prodName +'】图片：点击选取或者直接拖拽文件至此';
 
+  const [state, setState] = React.useState({
+    imgUrl: imgUrl0
+  });
 
   const onDropFiles = files => {
     console.log('files: ', files);
@@ -45,7 +48,7 @@ export default function ProdImageSmall(props) {
       const formData = new FormData();
       const file = files[0];
       formData.append('file', file);
-      formData.append('productId', '11');
+      formData.append('productId', productId);
 
       fetch('/api/newProductAsset', {
         method: 'POST',
@@ -59,6 +62,7 @@ export default function ProdImageSmall(props) {
       })
       .then(resp => {
         console.log('resp: ', resp);
+        setState({ imgUrl: resp.fileDownloadUri });
       })
       .catch(err => {
         err.json().then(e => {
@@ -81,8 +85,8 @@ export default function ProdImageSmall(props) {
             className={classes.dropzone}>
             <input {...getInputProps()} />
             {isDragActive ? dragActiveMsg :
-              (imgUrl == '' ? imgTooltipText :
-                <img src={imgUrl}
+              (state.imgUrl == '' ? imgTooltipText :
+                <img src={imageUrlBase+state.imgUrl}
                   alt={imgAltText}
                   title={imgTooltipText}
                   className={classes.img}/>)
