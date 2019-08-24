@@ -133,13 +133,13 @@ class ProfOrgMgmt extends Component {
             onRowDelete: this.onRowDelete
           }}
           actions={[
-            {
+            row => ({
               icon: Lock,
               tooltip: '设置密码',
               onClick: (event, proforg) => {
                 console.log(proforg);
               }
-            }
+            })
           ]}
         />
       </Container>
