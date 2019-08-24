@@ -21,8 +21,8 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import MaterialTable from 'material-table';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import SetPassDlg from './SetPassDlg';
 
-import ProfOrgSetPass from './ProfOrgSetPass';
 
 import DataSrc from '../DataSrc';
 import { fontSize } from '@material-ui/system';
@@ -53,6 +53,7 @@ class ProfOrgMgmt extends Component {
   constructor(props) {
     super(props);
     this.tableRef = React.createRef();
+    this.dlgRef = React.createRef();
   };
 
   state = {
@@ -109,8 +110,8 @@ class ProfOrgMgmt extends Component {
   render() {
     //const state = this.state;
     return (
-
       <Container>
+        <SetPassDlg ref={this.dlgRef} />
         <MaterialTable
           icons={tableIcons}
           tableRef={this.tableRef}
@@ -122,11 +123,6 @@ class ProfOrgMgmt extends Component {
             { title: '联系电话', field: 'phone' }
           ]}
           data={this.state.proforgs}
-          // detailPanel={(prodData) => {
-          //   return (
-          //     <ProfOrgSetPass />
-          //   )
-          // }}
           editable={{
             onRowAdd: this.onRowAdd,
             onRowUpdate: this.onRowUpdate,
@@ -138,6 +134,7 @@ class ProfOrgMgmt extends Component {
               tooltip: '设置密码',
               onClick: (event, proforg) => {
                 console.log(proforg);
+                this.dlgRef.current.handleOpen(true, proforg.id);
               }
             })
           ]}
