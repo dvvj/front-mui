@@ -7,6 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Container from '@material-ui/core/Container';
+import DataSrc from '../DataSrc';
 
 class SetPassDlg extends Component {
   constructor(props) {
@@ -63,6 +64,19 @@ class SetPassDlg extends Component {
     this.handleInputChange(event, errorText);
   }
 
+  setPass = e => {
+    const state = this.state;
+    DataSrc.SysAdmin.setProfOrgPass(
+      {
+        proforgId: state.proforgId,
+        password: state.passwords.pass1
+      }, resp => {
+        console.log('setPass resp: ', resp);
+        this.close();
+      });
+    //console.log('setPass t:', t);
+  }
+
   render() {
     return (
       <div>
@@ -115,7 +129,7 @@ class SetPassDlg extends Component {
           </DialogContent> */}
           <DialogActions>
             <Button onClick={this.close} color="primary">取消</Button>
-            <Button onClick={this.close} color="primary">设置密码</Button>
+            <Button onClick={this.setPass} color="primary">设置密码</Button>
           </DialogActions>
         </Dialog>
       </div>

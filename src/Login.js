@@ -63,7 +63,7 @@ class Login extends Component {
                     name='user'
                     value={this.state.user}
                     label="Type your email"
-                    type="email"
+                    // type="email"
                     onChange={this.changeHandler}
                     margin="normal"
                 />

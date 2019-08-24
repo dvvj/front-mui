@@ -81,6 +81,9 @@ let DataSrc = {
     },
     newProfOrg: (data, cb) => {
       return doPost(data, '/api/newProfOrg', cb);
+    },
+    setProfOrgPass: (passData, cb) => {
+      return doPost(passData, '/api/setProfOrgPass', cb);
     }
   }
 };
