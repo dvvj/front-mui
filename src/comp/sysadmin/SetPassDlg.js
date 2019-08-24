@@ -20,6 +20,10 @@ class SetPassDlg extends Component {
     passwords: {
       pass1: '',
       pass2: ''
+    },
+    errorTexts: {
+      pass1: '',
+      pass2: ''
     }
   }
 
@@ -29,13 +33,35 @@ class SetPassDlg extends Component {
 
   close = () => this.handleOpen(false, null);
 
-  handleInputChange = event => {
+  handleInputChange = (event, errorText) => {
     console.log('event: ', event);
     let name = event.target.name;
     let passwords = { ...this.state.passwords, [name]: event.target.value };
     console.log('updated passwords: ', passwords);
-    this.setState({ passwords });
+    let errorTexts = this.state.errorTexts;
+    errorTexts[name] = errorText;
+    this.setState({ passwords, errorTexts });
   };
+
+  // setErrorText = (name, errorText) => {
+  //   let errorTexts = this.state.errorTexts;
+  //   errorTexts[name] = errorText;
+  //   this.setState({ errorTexts });
+  // }
+
+  updatePass1 = event => {
+    let pass1 = event.target.value;
+    let errorText = (pass1.length < 6) ? '密码不得少于6位' : '';
+    
+    this.handleInputChange(event, errorText);
+  }
+
+  updatePass2 = event => {
+    let passwords = this.state.passwords;
+    let pass2 = event.target.value;
+    let errorText = (passwords.pass1 !== pass2) ? '两次密码输入不匹配' : '';
+    this.handleInputChange(event, errorText);
+  }
 
   render() {
     return (
@@ -49,10 +75,12 @@ class SetPassDlg extends Component {
                   <TextField
                       name='pass1'
                       value={this.state.passwords.pass1}
-                      label="Type your password"
+                      label="请输入密码"
                       // className={this.classes.textField}
-                      onChange={this.handleInputChange}
+                      onChange={this.updatePass1}
                       margin="normal"
+                      helperText={this.state.errorTexts.pass1}
+                      error={this.state.errorTexts.pass1 !== ''}
                       type="password"
                   />
               </div>
@@ -60,9 +88,11 @@ class SetPassDlg extends Component {
                   <TextField
                       name='pass2'
                       value={this.state.passwords.pass2}
-                      label="Re-Type your password"
+                      label="再次输入密码"
                       // className={this.classes.textField}
-                      onChange={this.handleInputChange}
+                      onChange={this.updatePass2}
+                      helperText={this.state.errorTexts.pass2}
+                      error={this.state.errorTexts.pass2 !== ''}
                       margin="normal"
                       type="password"
                   />
@@ -84,12 +114,8 @@ class SetPassDlg extends Component {
             />
           </DialogContent> */}
           <DialogActions>
-            <Button onClick={this.close} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.close} color="primary">
-              Subscribe
-            </Button>
+            <Button onClick={this.close} color="primary">取消</Button>
+            <Button onClick={this.close} color="primary">设置密码</Button>
           </DialogActions>
         </Dialog>
       </div>
