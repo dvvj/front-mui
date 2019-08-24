@@ -29,7 +29,9 @@ class SetPassDlg extends Component {
 
   close = () => this.handleOpen(false, null);
 
-  handleInputChange = name => event => {
+  handleInputChange = event => {
+    console.log('event: ', event);
+    let name = event.target.name;
     let passwords = { ...this.state.passwords, [name]: event.target.value };
     console.log('updated passwords: ', passwords);
     this.setState({ passwords });
