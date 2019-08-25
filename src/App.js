@@ -10,6 +10,8 @@ import ProdMgmt from './comp/proforg/ProdMgmt';
 import PriceMgmt from './comp/proforg/PriceMgmt';
 import ProfOrgMgmt from './comp/sysadmin/ProfOrgMgmt';
 import DrawerMenu from './comp/shared/DrawerMenu';
+import TransferList from './comp/shared/TransferList';
+import CenteredGrid from './exper/grid';
 
 // import Orgs from './Orgs';
 // import TmpList from './tmp/TmpList';
@@ -42,6 +44,8 @@ function App() {
         <Route path="/prod-mgmt" component={ProdMgmt} />
         <Route path="/price-mgmt" component={PriceMgmt} />
         <Route path="/proforg-mgmt" component={ProfOrgMgmt} />
+        <Route path="/transfer-list" component={TransferList} />
+        <Route path="/grid" component={CenteredGrid} />
 
       </div>
       {/* 

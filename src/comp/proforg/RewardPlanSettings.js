@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { forwardRef } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,25 +10,81 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Container from '@material-ui/core/Container';
 import DataSrc from '../DataSrc';
 import SnackbarUtil from '../shared/SnackbarUtil';
+import TransferList from '../shared/TransferList';
+import MaterialTable from 'material-table';
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import Refresh from '@material-ui/icons/Refresh';
+import ViewColumn from '@material-ui/icons/ViewColumn';
+
+import Draggable from 'react-draggable';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles, styled } from '@material-ui/core/styles';
+import RewardPlanSettingContent from './RewardPlanSettingContent';
+
+const tableIcons = {
+  SettingsEthernetIcon: forwardRef((props, ref) => <SettingsEthernetIcon {...props} ref={ref} />),
+  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  Refresh: forwardRef((props, ref) => <Refresh {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
+
+
+function DraggableComponent(props) {
+  return (
+    <Draggable cancel={'[class*="MuiDialogContent-root"]'}>
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+
+const StyledGrid = styled(Grid)(
+  {
+    flexGrow: 1
+  }
+);
 
 class RewardPlanSettings extends Component {
   constructor(props) {
     super(props);
 
     this.sbarRef = React.createRef();
+    this.tabRef = React.createRef();
   }
 
   state = {
     open: false,
     proforgId: null,
-    passwords: {
-      pass1: '',
-      pass2: ''
-    },
-    errorTexts: {
-      pass1: '',
-      pass2: ''
-    }
+    rewardPlanEntries: []
   }
 
   handleOpen = (toOpen, proforgId) => {
@@ -36,88 +93,56 @@ class RewardPlanSettings extends Component {
 
   close = () => this.handleOpen(false, null);
 
-  handleInputChange = (event, errorText) => {
-    console.log('event: ', event);
-    let name = event.target.name;
-    let passwords = { ...this.state.passwords, [name]: event.target.value };
-    console.log('updated passwords: ', passwords);
-    let errorTexts = this.state.errorTexts;
-    errorTexts[name] = errorText;
-    this.setState({ passwords, errorTexts });
-  };
-
   // setErrorText = (name, errorText) => {
   //   let errorTexts = this.state.errorTexts;
   //   errorTexts[name] = errorText;
   //   this.setState({ errorTexts });
   // }
 
-  updatePass1 = event => {
-    let pass1 = event.target.value;
-    let errorText = (pass1.length < 3) ? '密码不得少于3位' : '';
-    
-    this.handleInputChange(event, errorText);
-  }
-
-  updatePass2 = event => {
-    let passwords = this.state.passwords;
-    let pass2 = event.target.value;
-    let errorText = (passwords.pass1 !== pass2) ? '两次密码输入不匹配' : '';
-    this.handleInputChange(event, errorText);
-  }
-
-  setPass = e => {
-    const state = this.state;
-    DataSrc.SysAdmin.setProfOrgPass(
-      {
-        proforgId: state.proforgId,
-        password: state.passwords.pass1
-      }, resp => {
-        console.log('setPass resp: ', resp);
-
-        this.sbarRef.current.show(resp, '密码设置成功');
-        //this.sbarRef.current.show({success: false, 'msg': 'failed'}, '密码设置成功');
-        this.close();
-      });
-    //console.log('setPass t:', t);
-  }
+  onRowDelete = oldData =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 600);
+    })
 
   render() {
     return (
       <div>
         <SnackbarUtil ref={this.sbarRef} />
-        <Dialog open={this.state.open} onClose={this.close} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">设置【{this.state.proforgId}】密码</DialogTitle>
+        <Dialog
+          fullWidth={true}
+          maxWidth={'lg'}
+          PaperComponent={DraggableComponent}
+          open={this.state.open}
+          onClose={this.close}
+          aria-labelledby="form-dialog-title">
+          <DialogTitle
+            style={{ cursor: 'move' }} 
+            id="form-dialog-title">设置【】奖励套餐</DialogTitle>
           <DialogContent>
-            <Container>
-              {/* <form onSubmit={handleSetPass}> */}
-              <div>
-                  <TextField
-                      name='pass1'
-                      value={this.state.passwords.pass1}
-                      label="请输入密码"
-                      // className={this.classes.textField}
-                      onChange={this.updatePass1}
-                      margin="normal"
-                      helperText={this.state.errorTexts.pass1}
-                      error={this.state.errorTexts.pass1 !== ''}
-                      type="password"
-                  />
-              </div>
-              <div>
-                  <TextField
-                      name='pass2'
-                      value={this.state.passwords.pass2}
-                      label="再次输入密码"
-                      // className={this.classes.textField}
-                      onChange={this.updatePass2}
-                      helperText={this.state.errorTexts.pass2}
-                      error={this.state.errorTexts.pass2 !== ''}
-                      margin="normal"
-                      type="password"
-                  />
-              </div>
-            </Container>
+            <RewardPlanSettingContent />
+            {/* <StyledGrid containter>
+              <Grid item xs={6}>
+                <TransferList />
+              </Grid>
+              <Grid item xs={3}>
+                <MaterialTable
+                  icons={tableIcons}
+                  tableRef={this.tabRef}
+                  title="奖励配置列表（按产品）"
+                  columns={[
+                    { title: '产品列表', field: 'productList' },
+                    { title: '奖励百分比', field: 'reward' }
+                  ]}
+                  data={this.state.rewardPlanEntries}
+                  editable={{
+                    onRowDelete: this.onRowDelete
+                  }}
+                />
+              </Grid>
+            </StyledGrid> */}
+
           </DialogContent>
           {/* <DialogContent>
             <DialogContentText>
