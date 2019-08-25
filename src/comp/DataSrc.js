@@ -45,6 +45,10 @@ let doPost = (data, url, cb) => {
   })
 };
 
+let multiPosts = reqArr => {
+  return Promise.all(reqArr);
+};
+
 let doPostNoCb = (data, url) => {
   return doPost(data, url, x => x);
 };
@@ -60,7 +64,20 @@ const withPageAndCount = (entityName, entities) => {
 
 let DataSrc = {
   ProfOrg: {
-
+    getRewardPlansAndProducts: (rewardPlanReq, productReq) => {
+      return multiPosts(
+        [
+          DataSrc.ProfOrg.getAllRewardPlans(rewardPlanReq),
+          DataSrc.ProfOrg.getAllProducts(productReq)
+        ]
+      )
+    },
+    getAllRewardPlans: req => {
+      return doPost(
+        req, '/api/getRewardPlansByProfOrg',
+        plans => withPageAndCount('rewardPlans', plans)
+      );
+    },
     getAllProducts: req => {
       //return doGet(query, '/api/productsWithAssets');
       return doPost(

@@ -61,7 +61,7 @@ class ProdMgmt extends Component {
 
   getProfOrgId = () => {
     //return sessionStorage.getItem('uid');
-    return 'o-knc'; //todo
+    return 'o-org'; //todo
   }
 
   async componentDidMount() {

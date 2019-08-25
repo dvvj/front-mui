@@ -9,6 +9,7 @@ import ChevronRight from '@material-ui/icons/ChevronRight';
 import Clear from '@material-ui/icons/Clear';
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 import Edit from '@material-ui/icons/Edit';
+import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
 import FilterList from '@material-ui/icons/FilterList';
 import FirstPage from '@material-ui/icons/FirstPage';
 import LastPage from '@material-ui/icons/LastPage';
@@ -20,6 +21,7 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import MaterialTable from 'material-table';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import RewardPlanSettings from './RewardPlanSettings';
 
 import DataSrc from '../DataSrc';
 import ProdImages from './ProdImages';
@@ -27,6 +29,7 @@ import ProdImageSmall from './ProdImageSmall';
 import { fontSize } from '@material-ui/system';
 
 const tableIcons = {
+    SettingsEthernetIcon: forwardRef((props, ref) => <SettingsEthernetIcon {...props} ref={ref} />),
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
@@ -51,6 +54,7 @@ class PriceMgmt extends Component {
   constructor(props) {
     super(props);
     this.tableRef = React.createRef();
+    this.rewardPlanSettingsRef = React.createRef();
   };
 
   state = {
@@ -61,42 +65,43 @@ class PriceMgmt extends Component {
 
   getProfOrgId = () => {
     //return sessionStorage.getItem('uid');
-    return 'o-knc'; //todo
+    return 'o-org'; //todo
   }
 
   async componentDidMount() {
-    let t = await DataSrc.ProfOrg.getAllProducts({
-      proforgId: this.getProfOrgId()
-    });
-    console.log('products t:', t);
-    const { page, products, totalCount } = t;
-    this.setState({ page, products, totalCount });
+    let t = await DataSrc.ProfOrg.getRewardPlansAndProducts(
+      { proforgId: this.getProfOrgId() },
+      { proforgId: this.getProfOrgId() }
+    );
+    console.log('reward plans t:', t);
+    const { page, rewardPlans, totalCount } = t;
+    this.setState({ page, rewardPlans, totalCount });
   }
 
-  onRowAdd = newProdData =>
+  onRowAdd = newPlanData =>
     new Promise(resolve => {
-      let uid = this.getProfOrgId(); //
-      console.log('getItem from session', uid);
-      let prod = {
-        id: null,
-        ...newProdData.product,
-        detailedInfo: '',
-        keywords: '',
-        categories: '',
-        producerId: uid
-      };
-      DataSrc.ProfOrg.newProduct(
-        prod, newProd => {
-          resolve();
-          console.log('newProd: ', newProd);
-          const products = this.state.products;
-          products.push({
-            product: newProd,
-            assetItems: []
-          })
-          this.setState({products});
-        }
-      )
+      // let uid = this.getProfOrgId(); //
+      // console.log('getItem from session', uid);
+      // let plan = {
+      //   id: null,
+      //   ...newPlanData,
+      //   detailedInfo: '',
+      //   keywords: '',
+      //   categories: '',
+      //   producerId: uid
+      // };
+      // DataSrc.ProfOrg.newProduct(
+      //   prod, newProd => {
+      //     resolve();
+      //     console.log('newProd: ', newProd);
+      //     const products = this.state.products;
+      //     products.push({
+      //       product: newProd,
+      //       assetItems: []
+      //     })
+      //     this.setState({products});
+      //   }
+      // )
     })
 
   onRowUpdate = (newData, oldData) =>
@@ -126,31 +131,31 @@ class PriceMgmt extends Component {
     return (
 
       <Container>
+        <RewardPlanSettings ref={this.rewardPlanSettingsRef} />
         <MaterialTable
           icons={tableIcons}
           tableRef={this.tableRef}
           title="奖励套餐列表"
           columns={[
-            { title: '产品名', field: 'product.name' },
-            { title: '简称', field: 'product.shortName' },
-            { title: '基准价格', field: 'product.price0' },
-            {
-              title: '预览图',
-              field: 'imgUrl',
-              render: prodData => 
-                <ProdImageSmall
-                  productId={prodData.product.id}
-                  imageUrlBase='/product'
-                  imgUrl0={prodData.assetItems.length == 0 ? '' : `/${prodData.product.id}/${prodData.assetItems[0].url}`}
-                  prodName={prodData.product.name} />
-            }
+            { title: '套餐ID', field: 'id' },
+            { title: '描述', field: 'info' }
           ]}
-          data={this.state.products}
+          data={this.state.rewardPlans}
           editable={{
             onRowAdd: this.onRowAdd,
             onRowUpdate: this.onRowUpdate,
             onRowDelete: this.onRowDelete
           }}
+          actions={[
+            row => ({
+              icon: SettingsEthernetIcon,
+              tooltip: '套餐设置',
+              onClick: (event, proforg) => {
+                console.log(proforg);
+                this.rewardPlanSettingsRef.current.handleOpen(true, proforg.id);
+              }
+            })
+          ]}
         />
       </Container>
   );
