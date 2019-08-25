@@ -60,7 +60,9 @@ class PriceMgmt extends Component {
   state = {
     page: -1,
     products: [],
-    totalCount: -1
+    totalCount: -1,
+    rewardPlansPage: -1,
+    rewardPlansTotal: -1
   }
 
   getProfOrgId = () => {
@@ -74,8 +76,11 @@ class PriceMgmt extends Component {
       { proforgId: this.getProfOrgId() }
     );
     console.log('reward plans t:', t);
-    const { page, rewardPlans, totalCount } = t;
-    this.setState({ page, rewardPlans, totalCount });
+    const { page, products, totalCount } = t[1];
+    const { rewardPlans } = t[0];
+    let rewardPlansPage = t[0].page;
+    let rewardPlansTotal = t[0].totalCount;
+    this.setState({ page, rewardPlans, totalCount, rewardPlansPage, rewardPlansTotal });
   }
 
   onRowAdd = newPlanData =>

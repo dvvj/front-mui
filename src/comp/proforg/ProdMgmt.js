@@ -65,7 +65,7 @@ class ProdMgmt extends Component {
   }
 
   async componentDidMount() {
-    let t = await DataSrc.ProfOrg.getAllProducts({
+    let t = await DataSrc.ProfOrg.getAllProductsByOrg({
       proforgId: this.getProfOrgId()
     });
     console.log('products t:', t);

@@ -80,6 +80,12 @@ let DataSrc = {
     },
     getAllProducts: req => {
       //return doGet(query, '/api/productsWithAssets');
+      return doGet(
+        '/api/allProductsWithAssets',
+        prods => withPageAndCount('products', prods)
+      );
+    },
+    getAllProductsByOrg: req => {
       return doPost(
         req, '/api/productsWithAssets',
         prods => withPageAndCount('products', prods)
