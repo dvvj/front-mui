@@ -8,11 +8,13 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Container from '@material-ui/core/Container';
 import DataSrc from '../DataSrc';
+import SnackbarUtil from '../shared/SnackbarUtil';
 
 class SetPassDlg extends Component {
   constructor(props) {
     super(props);
-    this.dlgRef = React.createRef();
+
+    this.sbarRef = React.createRef();
   }
 
   state = {
@@ -52,7 +54,7 @@ class SetPassDlg extends Component {
 
   updatePass1 = event => {
     let pass1 = event.target.value;
-    let errorText = (pass1.length < 6) ? '密码不得少于6位' : '';
+    let errorText = (pass1.length < 3) ? '密码不得少于3位' : '';
     
     this.handleInputChange(event, errorText);
   }
@@ -72,6 +74,9 @@ class SetPassDlg extends Component {
         password: state.passwords.pass1
       }, resp => {
         console.log('setPass resp: ', resp);
+
+        this.sbarRef.current.show(resp, '密码设置成功');
+        //this.sbarRef.current.show({success: false, 'msg': 'failed'}, '密码设置成功');
         this.close();
       });
     //console.log('setPass t:', t);
@@ -80,6 +85,7 @@ class SetPassDlg extends Component {
   render() {
     return (
       <div>
+        <SnackbarUtil ref={this.sbarRef} />
         <Dialog open={this.state.open} onClose={this.close} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">设置【{this.state.proforgId}】密码</DialogTitle>
           <DialogContent>

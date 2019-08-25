@@ -9,7 +9,7 @@ import Orgs from './Orgs';
 import ProdMgmt from './comp/proforg/ProdMgmt';
 import ProfOrgMgmt from './comp/sysadmin/ProfOrgMgmt';
 import DrawerMenu from './comp/shared/DrawerMenu';
-import MaterialTableDemo from './exper/mtable';
+
 // import Orgs from './Orgs';
 // import TmpList from './tmp/TmpList';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -40,7 +40,7 @@ function App() {
         <Route  path="/orgs" component={Orgs} />
         <Route path="/prod-mgmt" component={ProdMgmt} />
         <Route path="/proforg-mgmt" component={ProfOrgMgmt} />
-        <Route  path="/mtable" component={MaterialTableDemo} />
+
       </div>
       {/* 
       <Route  path="/tmplist" component={TmpList} /> */}
