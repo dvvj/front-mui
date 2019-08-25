@@ -94,13 +94,23 @@ export default function ProfOrgOpList() {
       history.push('/prod-mgmt');
     }
 
+    const handleToPriceManagement = e => {
+      e.preventDefault();
+      Actions.ProfOrg.toProdManagement();
+      history.push('/price-mgmt');
+    }
+
     return (
     <List>
         <ListItem button>
             {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
             <ListItemText primary='产品管理' onClick={handleToProdManagement} />
         </ListItem>
-        <ExpansionPanel>
+        <ListItem button>
+            <ListItemText primary='价格体系设置' onClick={handleToPriceManagement} />
+        </ListItem>
+
+        {/* <ExpansionPanel>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -111,22 +121,15 @@ export default function ProfOrgOpList() {
 
           <List>
             <ListItem button>
-                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
                 <ListItemText primary='数据统计 1' onClick={() => alert('data stats 1')} />
             </ListItem>
             <ListItem button>
-                {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
                 <ListItemText primary='数据统计 2' onClick={() => alert('data stats 2')} />
             </ListItem>
           </List>
 
-        </ExpansionPanel>
-        {['产品管理', '数据统计', '价格体系设置'].map((text, index) => (
-          <ListItem button key={text}>
-            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        </ExpansionPanel> */}
+
     </List>
     );
 }

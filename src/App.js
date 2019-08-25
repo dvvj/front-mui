@@ -7,6 +7,7 @@ import Login from './Login';
 import Login2 from './Login2';
 import Orgs from './Orgs';
 import ProdMgmt from './comp/proforg/ProdMgmt';
+import PriceMgmt from './comp/proforg/PriceMgmt';
 import ProfOrgMgmt from './comp/sysadmin/ProfOrgMgmt';
 import DrawerMenu from './comp/shared/DrawerMenu';
 
@@ -19,7 +20,7 @@ function App() {
     <div className="App">
       {/* <CssBaseline /> */}
       <h2>Hello world!</h2>
-      <DrawerMenu title='Hello' welcomeMsg='welcome' role='sysadmin' />
+      <DrawerMenu title='Hello' welcomeMsg='welcome' role='proforg' />
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -39,6 +40,7 @@ function App() {
         <Route  path="/login2" component={Login2} />
         <Route  path="/orgs" component={Orgs} />
         <Route path="/prod-mgmt" component={ProdMgmt} />
+        <Route path="/price-mgmt" component={PriceMgmt} />
         <Route path="/proforg-mgmt" component={ProfOrgMgmt} />
 
       </div>
