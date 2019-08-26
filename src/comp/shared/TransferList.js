@@ -30,32 +30,51 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function not(a, b) {
-  return a.filter(value => b.indexOf(value) === -1);
+  let bids = b.map(v => v.id);
+  return a.filter(value => !bids.includes(value.id));
 }
 
 function intersection(a, b) {
-  return a.filter(value => b.indexOf(value) !== -1);
+  let bids = b.map(v => v.id);
+  console.log('bids:', bids);
+  return a.filter(value => bids.includes(value.id));
 }
 
 function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function TransferList() {
+function productsIncludes(products, prod) {
+  let pids = products.map(v => v.id);
+  console.log('pids: ', pids);
+  return pids.includes(prod.id);
+}
+
+function productIndexOf(products, prod) {
+  let pids = products.map(v => v.id);
+  console.log('pids: ', pids);
+  return pids.indexOf(prod.id);
+}
+
+export default function TransferList(props) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState([0, 1, 2, 3]);
-  const [right, setRight] = React.useState([4, 5, 6, 7]);
+  const [left, setLeft] = React.useState(props.products);
+  const [right, setRight] = React.useState([]);
+
+  // const setProducts = products => {
+  //   setLeft(products);
+  // }
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
 
-  const handleToggle = value => () => {
-    const currentIndex = checked.indexOf(value);
+  const handleToggle = product => () => {
+    const currentIndex = productIndexOf(checked, product);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(product);
     } else {
       newChecked.splice(currentIndex, 1);
     }
@@ -104,19 +123,19 @@ export default function TransferList() {
       <Divider />
       <List className={classes.list} dense component="div" role="list">
         {items.map(value => {
-          const labelId = `transfer-list-all-item-${value}-label`;
-
+          const product = value.product;
+          const labelId = `transfer-list-all-item-${product.id}-label`;
           return (
-            <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
+            <ListItem key={product.id} role="listitem" button onClick={handleToggle(product)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1}
+                  checked={productsIncludes(checked, product)}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemText id={labelId} primary={product.name} />
             </ListItem>
           );
         })}

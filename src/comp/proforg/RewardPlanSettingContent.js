@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { makeStyles, styled } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -56,43 +56,59 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function RewardPlanSettingContent() {
-  const classes = useStyles();
-  const tabRef = React.createRef();
+class RewardPlanSettingContent extends Component {
+  constructor(props) {
+    super(props);
+    this.tabRef = React.createRef();
+    this.transferListRef = React.createRef();
+  }
 
-  const [values, setValues] = React.useState({
-    rewardPlanEntries: []
-  });
+    // forwardRef((props, ref) => <TransferList {...props} ref={ref} />);
+  // const { products } = props;
 
-  const onRowDelete = oldData =>
+  // const [values, setValues] = React.useState({
+  //   products: [],
+  //   rewardPlanEntries: []
+  // });
+
+  initProducts = products => {
+    this.transferListRef.current.setProducts(products);
+  }
+
+  onRowDelete = oldData =>
     new Promise(resolve => {
       setTimeout(() => {
         resolve();
       }, 600);
     })
 
-  return (
-    <div className={classes.root}>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <TransferList />
+  render() {
+    return (
+      <div>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <TransferList
+              products={this.props.products} />
+          </Grid>
+          <Grid item xs={6}>
+            <MaterialTable
+              icons={tableIcons}
+              tableRef={this.tabRef}
+              title="奖励配置列表（按产品）"
+              columns={[
+                { title: '产品列表', field: 'productList' },
+                { title: '奖励百分比', field: 'reward' }
+              ]}
+              // data={values.rewardPlanEntries}
+              editable={{
+                onRowDelete: this.onRowDelete
+              }}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <MaterialTable
-            icons={tableIcons}
-            tableRef={tabRef}
-            title="奖励配置列表（按产品）"
-            columns={[
-              { title: '产品列表', field: 'productList' },
-              { title: '奖励百分比', field: 'reward' }
-            ]}
-            data={values.rewardPlanEntries}
-            editable={{
-              onRowDelete: onRowDelete
-            }}
-          />
-        </Grid>
-      </Grid>
-    </div>
-  );
-}
+      </div>
+    );
+    }
+};
+
+export default RewardPlanSettingContent;

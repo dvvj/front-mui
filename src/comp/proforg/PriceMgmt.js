@@ -61,6 +61,7 @@ class PriceMgmt extends Component {
     page: -1,
     products: [],
     totalCount: -1,
+    rewardPlans: [],
     rewardPlansPage: -1,
     rewardPlansTotal: -1
   }
@@ -80,7 +81,9 @@ class PriceMgmt extends Component {
     const { rewardPlans } = t[0];
     let rewardPlansPage = t[0].page;
     let rewardPlansTotal = t[0].totalCount;
-    this.setState({ page, rewardPlans, totalCount, rewardPlansPage, rewardPlansTotal });
+    this.setState({ page, products, totalCount, rewardPlans, rewardPlansPage, rewardPlansTotal });
+    //console.log('this.state.products:', this.state.products);
+    this.rewardPlanSettingsRef.current.setProducts(products);
   }
 
   onRowAdd = newPlanData =>

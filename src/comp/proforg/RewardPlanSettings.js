@@ -73,22 +73,34 @@ const StyledGrid = styled(Grid)(
   }
 );
 
+// const SettingsRef = forwardRef((props, ref) => <RewardPlanSettingContent ref={ref} />);
+
 class RewardPlanSettings extends Component {
   constructor(props) {
     super(props);
 
     this.sbarRef = React.createRef();
-    this.tabRef = React.createRef();
+    this.settingsRef = React.createRef();
   }
 
+  
   state = {
     open: false,
     proforgId: null,
+    products: [],
     rewardPlanEntries: []
+  }
+
+  setProducts = products => {
+    this.setState({ products });
   }
 
   handleOpen = (toOpen, proforgId) => {
     this.setState({ open: toOpen, proforgId });
+    // if (toOpen) {
+    //   console.log('this.settingsRef: ', this.state.products, this.settingsRef);
+    //   this.settingsRef.current.initProducts(this.state.products);
+    // }
   }
 
   close = () => this.handleOpen(false, null);
@@ -121,7 +133,9 @@ class RewardPlanSettings extends Component {
             style={{ cursor: 'move' }} 
             id="form-dialog-title">设置【】奖励套餐</DialogTitle>
           <DialogContent>
-            <RewardPlanSettingContent />
+            <RewardPlanSettingContent ref={this.settingsRef} 
+              products={this.state.products}
+              />
             {/* <StyledGrid containter>
               <Grid item xs={6}>
                 <TransferList />
