@@ -30,14 +30,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function not(a, b) {
-  let bids = b.map(v => v.id);
-  return a.filter(value => !bids.includes(value.id));
+  let bids = b.map(v => v.product.id);
+  return a.filter(value => !bids.includes(value.product.id));
 }
 
 function intersection(a, b) {
-  let bids = b.map(v => v.id);
-  console.log('bids:', bids);
-  return a.filter(value => bids.includes(value.id));
+  let bids = b.map(v => v.product.id);
+  console.log('bids:', bids, a, b);
+  return a.filter(value => bids.includes(value.product.id));
 }
 
 function union(a, b) {
@@ -45,15 +45,15 @@ function union(a, b) {
 }
 
 function productsIncludes(products, prod) {
-  let pids = products.map(v => v.id);
+  let pids = products.map(v => v.product.id);
   console.log('pids: ', pids);
-  return pids.includes(prod.id);
+  return pids.includes(prod.product.id);
 }
 
 function productIndexOf(products, prod) {
-  let pids = products.map(v => v.id);
-  console.log('pids: ', pids);
-  return pids.indexOf(prod.id);
+  let pids = products.map(v => v.product.id);
+  console.log('pids: ', pids, prod);
+  return pids.indexOf(prod.product.id);
 }
 
 export default function TransferList(props) {
@@ -71,6 +71,7 @@ export default function TransferList(props) {
 
   const handleToggle = product => () => {
     const currentIndex = productIndexOf(checked, product);
+    console.log('currentIndex: ', currentIndex);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
@@ -78,6 +79,8 @@ export default function TransferList(props) {
     } else {
       newChecked.splice(currentIndex, 1);
     }
+
+    console.log('newChecked: ', newChecked);
 
     setChecked(newChecked);
   };
@@ -99,6 +102,7 @@ export default function TransferList(props) {
   };
 
   const handleCheckedLeft = () => {
+    console.log('in handleCheckedLeft');
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
@@ -122,14 +126,14 @@ export default function TransferList(props) {
       />
       <Divider />
       <List className={classes.list} dense component="div" role="list">
-        {items.map(value => {
-          const product = value.product;
+        {items.map(prod => {
+          const product = prod.product;
           const labelId = `transfer-list-all-item-${product.id}-label`;
           return (
-            <ListItem key={product.id} role="listitem" button onClick={handleToggle(product)}>
+            <ListItem key={product.id} role="listitem" button onClick={handleToggle(prod)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={productsIncludes(checked, product)}
+                  checked={productsIncludes(checked, prod)}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
