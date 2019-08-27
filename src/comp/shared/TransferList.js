@@ -10,6 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import { TextField } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,6 +62,8 @@ export default function TransferList(props) {
   const [checked, setChecked] = React.useState([]);
   const [left, setLeft] = React.useState(props.products);
   const [right, setRight] = React.useState([]);
+  const [rewardRate, setRewardRate] = React.useState([]);
+  const selectionCallback = props.selectionCallback;
 
   // const setProducts = products => {
   //   setLeft(products);
@@ -68,6 +71,16 @@ export default function TransferList(props) {
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
+
+  const handleConfigSelect = e => {
+    console.log('in handleConfigSelect');
+    console.log(right, checked, leftChecked);
+    let selected = right;
+    setRight([]);
+    let remChecked = intersection(left, checked);
+    setChecked(remChecked);
+    selectionCallback(selected, rewardRate);
+  }
 
   const handleToggle = product => () => {
     const currentIndex = productIndexOf(checked, product);
@@ -122,7 +135,7 @@ export default function TransferList(props) {
           />
         }
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        // subheader={`${numberOfChecked(items)}/${items.length} selected`}
       />
       <Divider />
       <List className={classes.list} dense component="div" role="list">
@@ -148,9 +161,13 @@ export default function TransferList(props) {
     </Card>
   );
 
+  const updateRewardRate = e => {
+    setRewardRate(e.target.value);
+  }
+
   return (
     <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
-      <Grid item>{customList('Choices', left)}</Grid>
+      <Grid item>{customList('待选产品', left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Button
@@ -175,7 +192,22 @@ export default function TransferList(props) {
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList('Chosen', right)}</Grid>
+      <Grid item>{customList('选定产品', right)}</Grid>
+      <Grid item xs={2}>
+        <div>
+          <TextField
+            name='user'
+            value={rewardRate}
+            label="输入回报率"
+            onChange={updateRewardRate}
+            margin="normal"
+            />
+          <Button variant="contained" color="primary"
+            onClick={e => handleConfigSelect()}>配置选定产品
+          </Button>
+        </div>
+
+      </Grid>
     </Grid>
   );
 }

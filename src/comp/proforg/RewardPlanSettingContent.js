@@ -22,6 +22,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import Refresh from '@material-ui/icons/Refresh';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import Button from '@material-ui/core/Button';
 
 const tableIcons = {
   SettingsEthernetIcon: forwardRef((props, ref) => <SettingsEthernetIcon {...props} ref={ref} />),
@@ -60,7 +61,11 @@ class RewardPlanSettingContent extends Component {
   constructor(props) {
     super(props);
     this.tabRef = React.createRef();
-    this.transferListRef = React.createRef();
+    // this.transferListRef = React.createRef();
+  }
+
+  state = {
+    configEntries: []
   }
 
     // forwardRef((props, ref) => <TransferList {...props} ref={ref} />);
@@ -71,9 +76,9 @@ class RewardPlanSettingContent extends Component {
   //   rewardPlanEntries: []
   // });
 
-  initProducts = products => {
-    this.transferListRef.current.setProducts(products);
-  }
+  // initProducts = products => {
+  //   this.transferListRef.current.setProducts(products);
+  // }
 
   onRowDelete = oldData =>
     new Promise(resolve => {
@@ -82,24 +87,50 @@ class RewardPlanSettingContent extends Component {
       }, 600);
     })
 
+  onRowUpdate = oldData =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 600);
+    })
+
+  selectionCallback = (selectedProducts, rewardRate) => {
+      console.log('selectedProducts: ', selectedProducts);
+      if (selectedProducts.length > 0) {
+        let configEntries = this.state.configEntries;
+        let ids = selectedProducts.map(p => p.product.id);
+        // let names = selectedProducts.map(p => p.product.shortName).join("】【");
+        // let productNames =  `【${names}】`;
+        let productNames = selectedProducts.map(p => p.product.shortName);
+        configEntries.push({
+          productIds: ids,
+          productNames,
+          reward: rewardRate
+        });
+        this.setState({configEntries});
+      }
+    }
+
   render() {
     return (
       <div>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <TransferList
-              products={this.props.products} />
+              products={this.props.products}
+              selectionCallback={this.selectionCallback} />
           </Grid>
-          <Grid item xs={6}>
+
+          <Grid item xs={4}>
             <MaterialTable
               icons={tableIcons}
               tableRef={this.tabRef}
               title="奖励配置列表（按产品）"
               columns={[
-                { title: '产品列表', field: 'productList' },
+                { title: '产品列表', field: 'productNames' },
                 { title: '奖励百分比', field: 'reward' }
               ]}
-              // data={values.rewardPlanEntries}
+              data={this.state.configEntries}
               editable={{
                 onRowDelete: this.onRowDelete
               }}
