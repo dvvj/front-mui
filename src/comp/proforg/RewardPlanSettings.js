@@ -117,6 +117,21 @@ class RewardPlanSettings extends Component {
         resolve();
       }, 600);
     })
+  getProfOrgId = () => {
+    //return sessionStorage.getItem('uid');
+    return 'o-org'; //todo
+  }
+  
+  createRewardPlan = async e => {
+    let t = await DataSrc.ProfOrg.newRewardPlan({
+      planId: "testplan3",
+      creatorId: this.getProfOrgId(),
+      desc: "todo",
+      rewardPlanEntries: this.state.rewardPlanEntries
+    }, opResp => {
+      console.log('opResp: ', opResp);
+    });
+  }
 
   render() {
     return (
@@ -174,7 +189,7 @@ class RewardPlanSettings extends Component {
           </DialogContent> */}
           <DialogActions>
             <Button onClick={this.close} color="primary">取消</Button>
-            <Button onClick={this.setPass} color="primary">设置密码</Button>
+            <Button onClick={this.createRewardPlan} color="primary">创建奖励套餐</Button>
           </DialogActions>
         </Dialog>
       </div>

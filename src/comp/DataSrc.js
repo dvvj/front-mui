@@ -93,6 +93,9 @@ let DataSrc = {
     },
     newProduct: (data, cb) => {
       return doPost(data, '/api/newProduct', cb);
+    },
+    newRewardPlan: (req, cb) => {
+      return doPost(req, '/api/newRewardPlan', cb);
     }
   },
   SysAdmin: {
