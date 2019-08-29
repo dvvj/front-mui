@@ -111,6 +111,10 @@ class RewardPlanSettingContent extends Component {
       }
     }
 
+  getRewardPlanEntries() {
+    return this.state.configEntries;
+  }
+
   render() {
     return (
       <div>

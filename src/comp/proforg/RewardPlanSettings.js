@@ -123,11 +123,12 @@ class RewardPlanSettings extends Component {
   }
   
   createRewardPlan = async e => {
+    let rewardPlanEntries = this.settingsRef.current.getRewardPlanEntries();
     let t = await DataSrc.ProfOrg.newRewardPlan({
-      planId: "testplan3",
+      planId: "testplan4",
       creatorId: this.getProfOrgId(),
       desc: "todo",
-      rewardPlanEntries: this.state.rewardPlanEntries
+      rewardPlanEntries
     }, opResp => {
       console.log('opResp: ', opResp);
     });
