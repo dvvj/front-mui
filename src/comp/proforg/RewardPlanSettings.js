@@ -87,6 +87,7 @@ class RewardPlanSettings extends Component {
   state = {
     open: false,
     proforgId: null,
+    planId: '',
     products: [],
     rewardPlanEntries: []
   }
@@ -95,15 +96,15 @@ class RewardPlanSettings extends Component {
     this.setState({ products });
   }
 
-  handleOpen = (toOpen, proforgId) => {
-    this.setState({ open: toOpen, proforgId });
+  handleOpen = (toOpen, proforgId, planId) => {
+    this.setState({ open: toOpen, proforgId, planId });
     // if (toOpen) {
     //   console.log('this.settingsRef: ', this.state.products, this.settingsRef);
     //   this.settingsRef.current.initProducts(this.state.products);
     // }
   }
 
-  close = () => this.handleOpen(false, null);
+  close = () => this.handleOpen(false, null, null);
 
   // setErrorText = (name, errorText) => {
   //   let errorTexts = this.state.errorTexts;
@@ -125,7 +126,7 @@ class RewardPlanSettings extends Component {
   createRewardPlan = async e => {
     let rewardPlanEntries = this.settingsRef.current.getRewardPlanEntries();
     let t = await DataSrc.ProfOrg.newRewardPlan({
-      planId: "testplan4",
+      planId: this.state.planId,
       creatorId: this.getProfOrgId(),
       desc: "todo",
       rewardPlanEntries

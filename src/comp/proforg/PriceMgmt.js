@@ -88,6 +88,10 @@ class PriceMgmt extends Component {
 
   onRowAdd = newPlanData =>
     new Promise(resolve => {
+      let rewardPlans = this.state.rewardPlans;
+      rewardPlans.push(newPlanData);
+      this.setState({rewardPlans});
+      resolve();
       // let uid = this.getProfOrgId(); //
       // console.log('getItem from session', uid);
       // let plan = {
@@ -146,7 +150,8 @@ class PriceMgmt extends Component {
           title="奖励套餐列表"
           columns={[
             { title: '套餐ID', field: 'id' },
-            { title: '描述', field: 'info' }
+            { title: '描述', field: 'info' },
+            { title: '状态', field: 'status' }
           ]}
           data={this.state.rewardPlans}
           editable={{
@@ -160,7 +165,7 @@ class PriceMgmt extends Component {
               tooltip: '套餐设置',
               onClick: (event, proforg) => {
                 console.log(proforg);
-                this.rewardPlanSettingsRef.current.handleOpen(true, proforg.id);
+                this.rewardPlanSettingsRef.current.handleOpen(true, proforg.id, row.id);
               }
             })
           ]}

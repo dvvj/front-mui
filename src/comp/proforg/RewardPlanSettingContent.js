@@ -105,7 +105,7 @@ class RewardPlanSettingContent extends Component {
         configEntries.push({
           productIds: ids,
           productNames,
-          reward: rewardRate
+          rewardRate
         });
         this.setState({configEntries});
       }

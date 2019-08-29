@@ -73,12 +73,11 @@ export default function TransferList(props) {
   const rightChecked = intersection(checked, right);
 
   const handleConfigSelect = e => {
-    console.log('in handleConfigSelect');
-    console.log(right, checked, leftChecked);
     let selected = right;
     setRight([]);
     let remChecked = intersection(left, checked);
     setChecked(remChecked);
+    console.log('in handleConfigSelect', selected, rewardRate);
     selectionCallback(selected, rewardRate);
   }
 
