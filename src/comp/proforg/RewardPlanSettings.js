@@ -127,6 +127,8 @@ class RewardPlanSettings extends Component {
       <div>
         <SnackbarUtil ref={this.sbarRef} />
         <Dialog
+          disableBackdropClick
+          disableEscapeKeyDown
           fullWidth={true}
           maxWidth={'lg'}
           PaperComponent={DraggableComponent}
@@ -135,7 +137,7 @@ class RewardPlanSettings extends Component {
           aria-labelledby="form-dialog-title">
           <DialogTitle
             style={{ cursor: 'move' }} 
-            id="form-dialog-title">设置【】奖励套餐</DialogTitle>
+            id="form-dialog-title">设置奖励套餐</DialogTitle>
           <DialogContent>
             <RewardPlanSettingContent ref={this.settingsRef} 
               products={this.state.products}

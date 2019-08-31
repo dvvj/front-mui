@@ -152,8 +152,12 @@ class PriceMgmt extends Component {
     this.setState({confirmDlgOpen: true, confirmDlgTitle, rewardPlanToDelete: currRewardPlan});
   }
 
+  getCreatedPlanId = origPlanId => {
+    return `${this.getProfOrgId()}.${origPlanId}`;
+  }
+
   createRewardPlanCallback = newRewardPlan => {
-    const rewardPlans = this.state.rewardPlans.filter(plan => plan.id !== newRewardPlan.id);
+    const rewardPlans = this.state.rewardPlans.filter(plan => this.getCreatedPlanId(plan.id) !== newRewardPlan.id);
     newRewardPlan.status = RewardPlanStatus.Locked;
     rewardPlans.push(newRewardPlan);
     this.setState({rewardPlans});

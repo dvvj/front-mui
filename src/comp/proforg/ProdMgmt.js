@@ -150,7 +150,7 @@ class ProdMgmt extends Component {
           columns={[
             { title: '产品名', field: 'product.name' },
             { title: '简称', field: 'product.shortName' },
-            { title: '基准价格', field: 'product.price0' },
+            { title: '基准价格', field: 'product.price0', type: 'numeric' },
             {
               title: '预览图',
               field: 'imgUrl',

@@ -25,6 +25,7 @@ export default function ConfirmDlg(props) {
   // }, [valueProp, open]);
 
   function handleEntering() {
+    console.log('entering...');
     // if (radioGroupRef.current != null) {
     //   radioGroupRef.current.focus();
     // }
