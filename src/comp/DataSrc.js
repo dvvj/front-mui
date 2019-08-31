@@ -96,6 +96,9 @@ let DataSrc = {
     },
     newRewardPlan: (req, cb) => {
       return doPost(req, '/api/newRewardPlan', cb);
+    },
+    deleteRewardPlan: (req, cb) => {
+      return doPost(req, '/api/deleteRewardPlan', cb);
     }
   },
   SysAdmin: {

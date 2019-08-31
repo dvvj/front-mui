@@ -27,6 +27,7 @@ import DataSrc from '../DataSrc';
 import ProdImages from './ProdImages';
 import ProdImageSmall from './ProdImageSmall';
 import { fontSize } from '@material-ui/system';
+import ConfirmDlg from '../shared/ConfirmDlg';
 
 const tableIcons = {
     SettingsEthernetIcon: forwardRef((props, ref) => <SettingsEthernetIcon {...props} ref={ref} />),
@@ -50,6 +51,11 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
+const RewardPlanStatus = {
+  NewCreate: "新创建",
+  Locked: "已锁定"
+}
+
 class PriceMgmt extends Component {
   constructor(props) {
     super(props);
@@ -63,7 +69,11 @@ class PriceMgmt extends Component {
     totalCount: -1,
     rewardPlans: [],
     rewardPlansPage: -1,
-    rewardPlansTotal: -1
+    rewardPlansTotal: -1,
+
+    confirmDlgOpen: false,
+    confirmDlgTitle: '',
+    rewardPlanToDelete: {}
   }
 
   getProfOrgId = () => {
@@ -79,6 +89,9 @@ class PriceMgmt extends Component {
     console.log('reward plans t:', t);
     const { page, products, totalCount } = t[1];
     const { rewardPlans } = t[0];
+    rewardPlans.forEach(plan => {
+      plan.status = RewardPlanStatus.Locked
+    });
     let rewardPlansPage = t[0].page;
     let rewardPlansTotal = t[0].totalCount;
     this.setState({ page, products, totalCount, rewardPlans, rewardPlansPage, rewardPlansTotal });
@@ -89,60 +102,66 @@ class PriceMgmt extends Component {
   onRowAdd = newPlanData =>
     new Promise(resolve => {
       let rewardPlans = this.state.rewardPlans;
+      newPlanData.status = RewardPlanStatus.NewCreate;
       rewardPlans.push(newPlanData);
       this.setState({rewardPlans});
       resolve();
-      // let uid = this.getProfOrgId(); //
-      // console.log('getItem from session', uid);
-      // let plan = {
-      //   id: null,
-      //   ...newPlanData,
-      //   detailedInfo: '',
-      //   keywords: '',
-      //   categories: '',
-      //   producerId: uid
-      // };
-      // DataSrc.ProfOrg.newProduct(
-      //   prod, newProd => {
-      //     resolve();
-      //     console.log('newProd: ', newProd);
-      //     const products = this.state.products;
-      //     products.push({
-      //       product: newProd,
-      //       assetItems: []
-      //     })
-      //     this.setState({products});
-      //   }
-      // )
     })
 
-  onRowUpdate = (newData, oldData) =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 600);
-    })
+  // onRowUpdate = (newData, oldData) =>
+  //   new Promise(resolve => {
+  //     setTimeout(() => {
+  //       resolve();
+  //     }, 600);
+  //   })
 
-  onRowDelete = oldData =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 600);
-    })
+  onRowDelete = rowToDelete => {
+    return DataSrc.ProfOrg.deleteRewardPlan(
+      { planId: rowToDelete.id },
+      opResp => {
+        console.log('onRowDelete resp:', opResp);
+      }
+    );
+  }
 
-  onRefresh = () =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
+  // onRefresh = () =>
+  //   new Promise(resolve => {
+  //     setTimeout(() => {
+  //       resolve();
 
-      }, 600);
-    })
+  //     }, 600);
+  //   })
+  handleConfirmDlgClose = (confirmed) => {
+    console.log('confirm delete: ', confirmed);
+    this.setState({confirmDlgOpen: false});
+
+    if (confirmed) {
+      this.onRowDelete(this.state.rewardPlanToDelete);
+    }
+  }
+
+  confirmDelete = (currRewardPlan) => {
+    let confirmDlgTitle = `确认删除该奖励套餐【${currRewardPlan.id}】？`;
+    this.setState({confirmDlgOpen: true, confirmDlgTitle, rewardPlanToDelete: currRewardPlan});
+  }
+  
 
   render() {
     //const state = this.state;
     return (
 
       <Container>
+        <ConfirmDlg
+          // classes={{
+          //   paper: classes.paper,
+          // }}
+          id="ringtone-menu"
+          keepMounted
+          open={this.state.confirmDlgOpen}
+          onClose={this.handleConfirmDlgClose}
+          title={this.state.confirmDlgTitle}
+          value={false}
+        />
         <RewardPlanSettings ref={this.rewardPlanSettingsRef} />
         <MaterialTable
           icons={tableIcons}
@@ -151,23 +170,47 @@ class PriceMgmt extends Component {
           columns={[
             { title: '套餐ID', field: 'id' },
             { title: '描述', field: 'info' },
-            { title: '状态', field: 'status' }
+            { title: '状态', field: 'status', editable: 'never',
+              render: plan => { //<span style={{color: 'red'}}>{plan.status}</span>
+
+                return (plan ? (
+                  plan.status === RewardPlanStatus.Locked ?
+                    <span style={{color: 'red'}}>{plan.status}</span> :
+                    <span style={{color: 'green'}}>{plan.status}</span>
+                  ) : ''
+                )
+              }
+            }
           ]}
           data={this.state.rewardPlans}
           editable={{
             onRowAdd: this.onRowAdd,
-            onRowUpdate: this.onRowUpdate,
-            onRowDelete: this.onRowDelete
+            // onRowUpdate: this.onRowUpdate,
+            // onRowDelete: this.onRowDelete
           }}
           actions={[
-            row => ({
-              icon: SettingsEthernetIcon,
-              tooltip: '套餐设置',
-              onClick: (event, proforg) => {
-                console.log(proforg);
-                this.rewardPlanSettingsRef.current.handleOpen(true, proforg.id, row.id);
+            // config
+            row => (
+              row.status === RewardPlanStatus.NewCreate ? {
+                icon: SettingsEthernetIcon,
+                tooltip: '套餐设置',
+                onClick: (event, proforg) => {
+                  this.rewardPlanSettingsRef.current.handleOpen(true, proforg.id, row.id);
+                }
+              } : null
+            ),
+            // delete
+            row => (
+              {
+                icon: DeleteOutline,
+                tooltip: '删除套餐',
+                onClick: (event, proforg) => {
+                  console.log('proforg: ', proforg);
+                  this.confirmDelete(row);
+                  //this.onRowDelete(row);
+                }
               }
-            })
+            ),
           ]}
         />
       </Container>
