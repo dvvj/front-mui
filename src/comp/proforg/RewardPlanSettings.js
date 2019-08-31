@@ -10,30 +10,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Container from '@material-ui/core/Container';
 import DataSrc from '../DataSrc';
 import SnackbarUtil from '../shared/SnackbarUtil';
-import TransferList from '../shared/TransferList';
-import MaterialTable from 'material-table';
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import Refresh from '@material-ui/icons/Refresh';
-import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import Draggable from 'react-draggable';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles, styled } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core/styles';
 import RewardPlanSettingContent from './RewardPlanSettingContent';
 
 // const tableIcons = {
@@ -87,7 +68,7 @@ class RewardPlanSettings extends Component {
   state = {
     open: false,
     proforgId: null,
-    planId: '',
+    rewardPlan: {},
     products: [],
     rewardPlanEntries: []
   }
@@ -96,8 +77,8 @@ class RewardPlanSettings extends Component {
     this.setState({ products });
   }
 
-  handleOpen = (toOpen, proforgId, planId) => {
-    this.setState({ open: toOpen, proforgId, planId });
+  handleOpen = (toOpen, proforgId, rewardPlan) => {
+    this.setState({ open: toOpen, proforgId, rewardPlan });
     // if (toOpen) {
     //   console.log('this.settingsRef: ', this.state.products, this.settingsRef);
     //   this.settingsRef.current.initProducts(this.state.products);
@@ -126,18 +107,17 @@ class RewardPlanSettings extends Component {
   createRewardPlan = async e => {
     let rewardPlanEntries = this.settingsRef.current.getRewardPlanEntries();
     let t = await DataSrc.ProfOrg.newRewardPlan({
-      planId: this.state.planId,
+      planId: this.state.rewardPlan.id,
       creatorId: this.getProfOrgId(),
-      desc: "",
+      desc: this.state.rewardPlan.info,
       rewardPlanEntries
     }, opResp => {
       console.log('opResp: ', opResp);
+      this.sbarRef.current.showOpResp(opResp, `奖励套餐【${this.state.rewardPlan.id}】创建成功`)
       if (opResp.success) {
+        const newRewardPlan = opResp.obj;
+        this.props.createRewardPlanCallback(newRewardPlan);
         this.close();
-        //this.props.createRewardPlanCallback();
-      }
-      else {
-        this.sbarRef.current.err(`服务器返回错误：${opResp.msg}`);
       }
     });
   }

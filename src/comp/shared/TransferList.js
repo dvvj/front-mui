@@ -57,12 +57,19 @@ function productIndexOf(products, prod) {
   return pids.indexOf(prod.product.id);
 }
 
+const RewardRateInputText = {
+  Normal: '回报百分比（%）',
+  Err_NumberBtw1_99: '请输入1-99之间的数字'
+}
+
 export default function TransferList(props) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState([]);
   const [left, setLeft] = React.useState(props.products);
   const [right, setRight] = React.useState([]);
   const [rewardRate, setRewardRate] = React.useState([]);
+  const [rewardRateInputError, setRewardRateInputError] = React.useState(false);
+  const [rewardRateInputText, setRewardRateInputText] = React.useState(RewardRateInputText.Normal);
   const selectionCallback = props.selectionCallback;
 
   // const setProducts = products => {
@@ -161,7 +168,17 @@ export default function TransferList(props) {
   );
 
   const updateRewardRate = e => {
-    setRewardRate(e.target.value);
+    let newValue = e.target.value;
+
+    if (newValue >= 100 || newValue < 1) {
+      setRewardRateInputError(true);
+      setRewardRateInputText(RewardRateInputText.Err_NumberBtw1_99);
+    }
+    else {
+      setRewardRateInputError(false);
+      setRewardRateInputText(RewardRateInputText.Normal);
+    }
+    setRewardRate(newValue);
   }
 
   return (
@@ -192,12 +209,14 @@ export default function TransferList(props) {
         </Grid>
       </Grid>
       <Grid item>{customList('选定产品', right)}</Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
         <div>
           <TextField
-            name='user'
+            name='rewardRate'
             value={rewardRate}
-            label="输入回报率"
+            type="number"
+            error={rewardRateInputError}
+            label={rewardRateInputText}
             onChange={updateRewardRate}
             margin="normal"
             />

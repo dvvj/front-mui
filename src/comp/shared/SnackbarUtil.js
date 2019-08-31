@@ -129,6 +129,15 @@ class SnackbarUtil extends Component {
     })
   }
 
+  showOpResp = (opResp, succssMsg) => {
+    if (opResp.success) {
+      this.success(succssMsg);
+    }
+    else {
+      this.err(`服务器返回错误：${opResp.msg}`);
+    }
+  }
+
   show = (opResp, successMessage) => {
     if (opResp.success) {
       this.success(successMessage);

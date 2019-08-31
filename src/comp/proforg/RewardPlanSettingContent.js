@@ -101,7 +101,7 @@ class RewardPlanSettingContent extends Component {
         let ids = selectedProducts.map(p => p.product.id);
         // let names = selectedProducts.map(p => p.product.shortName).join("】【");
         // let productNames =  `【${names}】`;
-        let productNames = selectedProducts.map(p => p.product.shortName);
+        let productNames = selectedProducts.map(p => p.product.shortName).join(" - ");
         configEntries.push({
           productIds: ids,
           productNames,
@@ -118,8 +118,8 @@ class RewardPlanSettingContent extends Component {
   render() {
     return (
       <div>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
+        <Grid container spacing={1}>
+          <Grid item xs={7}>
             <TransferList
               products={this.props.products}
               selectionCallback={this.selectionCallback} />
@@ -132,12 +132,14 @@ class RewardPlanSettingContent extends Component {
               title="奖励配置列表（按产品）"
               columns={[
                 { title: '产品列表', field: 'productNames' },
-                { title: '奖励百分比', field: 'reward' }
+                { title: '回报百分比', field: 'rewardRate',
+                  render: row => `${row.rewardRate}%`
+                }
               ]}
               data={this.state.configEntries}
-              editable={{
-                onRowDelete: this.onRowDelete
-              }}
+              // editable={{
+              //   onRowDelete: this.onRowDelete
+              // }}
             />
           </Grid>
         </Grid>

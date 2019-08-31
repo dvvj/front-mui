@@ -28,6 +28,7 @@ import ProdImages from './ProdImages';
 import ProdImageSmall from './ProdImageSmall';
 import { fontSize } from '@material-ui/system';
 import ConfirmDlg from '../shared/ConfirmDlg';
+import SnackbarUtil from '../shared/SnackbarUtil';
 
 const tableIcons = {
     SettingsEthernetIcon: forwardRef((props, ref) => <SettingsEthernetIcon {...props} ref={ref} />),
@@ -52,14 +53,15 @@ const tableIcons = {
   };
 
 const RewardPlanStatus = {
-  NewCreate: "新创建",
-  Locked: "已锁定"
+  NewCreate: "待配置",
+  Locked: "已创建"
 }
 
 class PriceMgmt extends Component {
   constructor(props) {
     super(props);
     this.tableRef = React.createRef();
+    this.sbarRef = React.createRef();
     this.rewardPlanSettingsRef = React.createRef();
   };
 
@@ -117,9 +119,14 @@ class PriceMgmt extends Component {
 
   onRowDelete = rowToDelete => {
     return DataSrc.ProfOrg.deleteRewardPlan(
-      { planId: rowToDelete.id },
+      {
+        planId: rowToDelete.id
+      },
       opResp => {
         console.log('onRowDelete resp:', opResp);
+        const rewardPlans = this.state.rewardPlans.filter(p => p.id !== rowToDelete.id);
+        this.setState({rewardPlans});
+        this.sbarRef.current.showOpResp(opResp, '删除成功');
       }
     );
   }
@@ -144,6 +151,13 @@ class PriceMgmt extends Component {
     let confirmDlgTitle = `确认删除该奖励套餐【${currRewardPlan.id}】？`;
     this.setState({confirmDlgOpen: true, confirmDlgTitle, rewardPlanToDelete: currRewardPlan});
   }
+
+  createRewardPlanCallback = newRewardPlan => {
+    const rewardPlans = this.state.rewardPlans.filter(plan => plan.id !== newRewardPlan.id);
+    newRewardPlan.status = RewardPlanStatus.Locked;
+    rewardPlans.push(newRewardPlan);
+    this.setState({rewardPlans});
+  }
   
 
   render() {
@@ -151,6 +165,7 @@ class PriceMgmt extends Component {
     return (
 
       <Container>
+        <SnackbarUtil ref={this.sbarRef} />
         <ConfirmDlg
           // classes={{
           //   paper: classes.paper,
@@ -162,7 +177,9 @@ class PriceMgmt extends Component {
           title={this.state.confirmDlgTitle}
           value={false}
         />
-        <RewardPlanSettings ref={this.rewardPlanSettingsRef} />
+        <RewardPlanSettings ref={this.rewardPlanSettingsRef}
+          createRewardPlanCallback={this.createRewardPlanCallback}
+          />
         <MaterialTable
           icons={tableIcons}
           tableRef={this.tableRef}
@@ -195,7 +212,7 @@ class PriceMgmt extends Component {
                 icon: SettingsEthernetIcon,
                 tooltip: '套餐设置',
                 onClick: (event, proforg) => {
-                  this.rewardPlanSettingsRef.current.handleOpen(true, proforg.id, row.id);
+                  this.rewardPlanSettingsRef.current.handleOpen(true, proforg.id, row);
                 }
               } : null
             ),
