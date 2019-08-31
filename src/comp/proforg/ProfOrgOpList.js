@@ -9,6 +9,7 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -17,7 +18,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -103,11 +104,12 @@ export default function ProfOrgOpList() {
     return (
     <List>
         <ListItem button>
-            {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-            <ListItemText primary='产品管理' onClick={handleToProdManagement} />
+          <ListItemIcon><ShoppingCartIcon /></ListItemIcon>
+          <ListItemText primary='产品管理' onClick={handleToProdManagement} />
         </ListItem>
         <ListItem button>
-            <ListItemText primary='价格体系设置' onClick={handleToPriceManagement} />
+          <ListItemIcon><MonetizationOnIcon /></ListItemIcon>
+          <ListItemText primary='价格体系设置' onClick={handleToPriceManagement} />
         </ListItem>
 
         {/* <ExpansionPanel>

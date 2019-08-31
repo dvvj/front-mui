@@ -86,7 +86,10 @@ class SetPassDlg extends Component {
     return (
       <div>
         <SnackbarUtil ref={this.sbarRef} />
-        <Dialog open={this.state.open} onClose={this.close} aria-labelledby="form-dialog-title">
+        <Dialog
+          disableBackdropClick
+          disableEscapeKeyDown
+          open={this.state.open} onClose={this.close} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">设置【{this.state.proforgId}】密码</DialogTitle>
           <DialogContent>
             <Container>

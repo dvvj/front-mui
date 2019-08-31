@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DrawerMenu(props) {
-  const { role, title, welcomeMsg } = props;
+  const { role, title } = props;
 
   const classes = useStyles();
   const theme = useTheme();
@@ -136,7 +136,7 @@ export default function DrawerMenu(props) {
         {(role === 'proforg') ?
           <ProfOrgOpList /> : (role === 'sysadmin') ? <SysAdminOpList /> : <div />
         }
-        <Divider />
+        {/* <Divider />
         <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
             <ListItem button key={text}>
@@ -144,7 +144,7 @@ export default function DrawerMenu(props) {
               <ListItemText primary={text} />
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -152,9 +152,9 @@ export default function DrawerMenu(props) {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Typography paragraph>
+        {/* <Typography paragraph>
           {welcomeMsg}
-        </Typography>
+        </Typography> */}
       </main>
     </div>
   );

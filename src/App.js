@@ -21,8 +21,8 @@ function App() {
   return (
     <div className="App">
       {/* <CssBaseline /> */}
-      <h2>Hello world!</h2>
-      <DrawerMenu title='Hello' welcomeMsg='welcome' role='proforg' />
+      {/* <h2>Hello world!</h2> */}
+      <DrawerMenu title='Hello' role='sysadmin' />
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
